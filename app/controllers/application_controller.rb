@@ -2,7 +2,7 @@ require "./config/environment"
 
 class ApplicationController < Sinatra::Base
 	configure do
-		#enable :sessions
+		enable :sessions
 		set :session_secret, "suuperdupersecret"
 	end
 
