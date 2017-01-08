@@ -1,9 +1,14 @@
 require "./config/environment"
+require "./models/"
 
 class ApplicationController < Sinatra::Base
 	configure do
 		#enable :sessions
 		set :session_secret, "suuperdupersecret"
+	end
+
+	before do
+		content_type "application/json"
 	end
 
 	get "/" do
