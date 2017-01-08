@@ -15,4 +15,10 @@ class Car
 	validates :car_name, presence: true
 	validates :years_car, presence: true
 	validates :owner, presence: true
+
+	#filter
+	scope :title, -> (title) {where(title: /^#{title}/)}
+	scope :car_name, -> (car_name) {where(car_name: /^#{car_name}/)}
+	scope :years_car, -> (years_car) {where(years_car: years_car)}
+	scope :owner, -> (owner) {where(owner: owner)}
 end
