@@ -19,5 +19,6 @@ class CarSerializer
 
 		#add errors to data
 		data[:errors] = @car.errors if @car.errors.any?
+		data
 	end
 end

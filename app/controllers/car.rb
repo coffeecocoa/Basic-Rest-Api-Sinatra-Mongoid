@@ -1,4 +1,4 @@
-require "./car_serializer"
+#require "./car_serializer"
 
 class CarController < ApplicationController
 	
@@ -18,4 +18,29 @@ class CarController < ApplicationController
 		halt(404,{message: "Car not found"}.to_json) unless car
 		CarSerializer.new(car).to_json
 	end
+
+	#create a car post
+	post "/api/cars" do
+		car = Car.new(json_params)
+		if car.save
+			response.headers["Location"] = "#{base_url}/api/cars/#{car.id}"
+			status 201
+		else
+			status 422
+			body CarSerializer.new(car).to_json
+		end
+	end
+
+	#update a car post
+	patch "/api/cars/:id" do
+		car = Car.where(id: params[:id]).first
+		halt(404,{message: "Car not found"}.to_json) unless car
+		if car.update_attributes(json_params)
+			CarSerializer.new(car).to_json
+		else
+			status 422
+			body CarSerializer.new(car).to_json
+		end
+	end
 end
+
