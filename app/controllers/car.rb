@@ -13,34 +13,30 @@ class CarController < ApplicationController
 	end
 
 	#show details of one specific car
-	get "/api/cars/:id" do |variable|
-		car = Car.where(id: params[:id]).first
-		halt(404,{message: "Car not found"}.to_json) unless car
-		CarSerializer.new(car).to_json
+	get "/api/cars/:id" do 
+		halt_if_not_found!
+		serialize(car)
 	end
 
 	#create a car post
 	post "/api/cars" do
 		car = Car.new(json_params)
-		if car.save
-			response.headers["Location"] = "#{base_url}/api/cars/#{car.id}"
-			status 201
-		else
-			status 422
-			body CarSerializer.new(car).to_json
-		end
+		halt(422,serialize(car)) unless car.save
+		response.headers["Location"] = "#{base_url}/api/cars/#{car.id}"
+		status 201
 	end
 
 	#update a car post
 	patch "/api/cars/:id" do
-		car = Car.where(id: params[:id]).first
-		halt(404,{message: "Car not found"}.to_json) unless car
-		if car.update_attributes(json_params)
-			CarSerializer.new(car).to_json
-		else
-			status 422
-			body CarSerializer.new(car).to_json
-		end
+		halt_if_not_found!
+		halt(422,serialize(car)) unless car.update_attributes(json_params)
+		serialize(car)
+	end
+
+	#delete a car post
+	delete "/api/cars/:id" do
+		car.destroy if car
+		status 204
 	end
 end
 
